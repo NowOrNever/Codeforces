@@ -1,0 +1,372 @@
+A. Sereja and Dima（(Div. 2)）
+#include<cstdio>
+#include<iostream>
+
+using namespace std;
+
+const int N = 100500;
+int n, a[N], b[5];
+int main ()
+{
+	cin >> n;
+
+	for (int i = 1; i <= n; i ++ ) cin >> a[i];
+
+	int l = 1, r = n;
+	for (int i = 1; i <= n; i ++ ) {
+		if (a[l] > a[r]) b[i%2] += a[l++];
+		else b[i%2] += a[r--];
+	}
+
+	cout << b[1] << " " << b[0];
+
+	return 0;
+}
+
+B.Sereja and Stairs（Div 2）
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int a[5001];
+int main()
+{
+	int i,j,n,c=0;
+	cin>>n;
+	vector<int> v;
+	for(i=0;i<n;i++)
+	{
+		cin>>j;
+		a[j]++;
+	}
+	for(i=1;i<=5000;i++)
+ 	if(a[i])
+	{
+ 		v.push_back(i);
+		a[i]--;
+		c=i;
+	}
+		for(i=c-1;i;i--)
+	if(a[i])
+	{
+		 v.push_back(i);
+	}
+	cout<<v.size()<<"\n";
+	for(i=0;i<(int)v.size();i++) cout<<v[i]<<" ";
+	
+	return 0;
+}
+
+C.Sereja and Prefixes（Div 2）
+
+#include <iostream>
+#include <map>
+using namespace std;
+
+map<long long, int> symbol;
+map<long long, pair<int, int> > prefix;
+long long len;
+
+int query(long long p) {
+	//cerr << "query " << p << endl;
+	if (symbol.find(p) != symbol.end()) {
+			return symbol[p];
+	} else {
+			map<long long, pair<int, int> >::iterator it = prefix.find(-p);
+			if (it == prefix.end()) {
+				it = prefix.lower_bound(-p);
+			}
+			//cerr << "it=" << it->first << endl;
+			long long rp = (p + it->first) % (long long)(it->second).first;
+			//cerr << "rp=" << rp << endl;
+			return query(rp);
+	}
+}
+
+int main() {
+	ios_base::sync_with_stdio(false);
+
+	int m; cin >> m;
+	while (m--) {
+		int t; cin >> t;
+		if (t == 1) {
+			// add
+			int x; cin >> x;
+			symbol[len] = x;
+			len++;
+		} else {
+			// copy
+			int l, c; cin >> l >> c;
+			prefix[-len] = make_pair(l, c);
+			len += l * c;
+		}
+	}
+
+	int q; cin >> q;
+	while (q--) {
+		long long p; cin >> p; p--;
+		cout << query(p) << " ";
+		//cerr << '\n';		
+	}
+	cout << endl;
+
+	return 0;
+}
+
+D.Sereja and Tree(Div 2)
+
+#include <cstdio>
+#include <set>
+using namespace std;
+const int N = 7100;
+int n,m,k,T,X,K,t[N],l[N],r[N],x[N],L[N],R[N],f[20*N];
+int main() {
+    scanf("%d%d",&n,&m);
+    f[0] = -1;
+    for (int i = 1;i < 20*N;i++) f[i] = f[i>>1]+1;
+    while (m--) {
+        scanf("%d",&K);
+        if (K == 1) {
+            scanf("%d%d%d%d",t+k,l+k,r+k,x+k);
+            k++;
+        } else {
+            scanf("%d%d",&T,&X);
+            L[T] = R[T] = X;
+            for (int i = T+1;i <= n;i++) {
+                L[i] = L[i-1]+f[L[i-1]-1]+1;
+                R[i] = R[i-1]+f[R[i-1]]+1;
+                if (R[i] > 20*n) {
+                    T = n+1;
+                    break;
+                }
+            }
+            set<int> ans;
+            for (int i = 0;i < k;i++)
+                if (t[i] >= T)
+                    if ((L[t[i]] <= r[i])&&(l[i] <= R[t[i]]))
+                        ans.insert(x[i]);
+            printf("%d\n",ans.size());
+        }
+    }
+    return 0;
+}
+
+E.Sereja and Brackets(Div 2)
+
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
+#include <algorithm>
+
+using namespace std;
+
+const int N = 1048576;
+
+int len;
+
+struct node
+{
+	int l,r,s;
+	node () {l=r=s=0;}
+}tr[N*2];
+
+int n,m,ql,qr;
+char s[N];
+
+node operator + (node a,node b)
+{
+	node c;
+	int t=min(a.r,b.l);
+	c.s=a.s+b.s+t;
+	a.r-=t;
+	b.l-=t;
+	c.l=a.l+b.l;
+	c.r=a.r+b.r;
+	return c;
+}
+
+void build(int p,int ll,int rr)
+{
+	if (ll==rr)
+	{
+		if (ll>len) return;
+		tr[p].s=0;
+		if (s[ll]=='(') tr[p].r=1; else tr[p].l=1;
+		return;
+	}
+	int mid=(ll+rr)/2;
+	build(p*2,ll,mid);
+	build(p*2+1,mid+1,rr);
+	tr[p]=tr[p*2]+tr[p*2+1];
+}
+
+node query(int p,int ll,int rr,int l,int r)
+{
+	if (ll==l && rr==r) return tr[p];
+	int mid=(ll+rr)/2;
+	if (r<=mid) return query(p*2,ll,mid,l,r);
+	else if (l>mid) return query(p*2+1,mid+1,rr,l,r);
+	return query(p*2,ll,mid,l,mid)+query(p*2+1,mid+1,rr,mid+1,r);
+}
+
+int main()
+{
+	gets(s+1);
+	len=strlen(s+1);
+	build(1,1,N);
+	scanf("%d",&m);
+	for (int i=1;i<=m;i++)
+	{
+		scanf("%d%d",&ql,&qr);
+		printf("%d\n",query(1,1,N,ql,qr).s*2);
+	}
+    return 0;
+}
+
+D.Sereja and Cinema(Div 1)
+
+#include <iostream>
+#include <cstdio>
+#include <cstring>
+#include <cmath>
+#include <algorithm>
+
+using namespace std;
+
+typedef long long LL;
+
+const int MOD = 1000000007;
+const int MAXN = 100010;
+
+int n;
+int a[MAXN], sum[MAXN], f[MAXN], fv[MAXN], inv[MAXN];
+
+inline int comb(int x, int y)
+{
+	return (LL)f[x + y] * fv[x] % MOD * fv[y] % MOD;
+}
+
+int solve(int l, int r)
+{
+	if (sum[l - 1] == sum[r])
+	{
+		int pt = 1;
+		for (int i = 1; i <= r - l; ++i) pt = pt * 2 % MOD;
+		return pt;
+	}
+	int p = l, q = r, nl, nr;
+	while (a[p] == 0) ++p;
+	while (a[q] == 0) --q;
+	if (p == q && a[p] == 1)
+		return comb(p - l, r - q);
+	int ret = 0;
+	if (a[p] >= a[q])
+	{
+		nl = p;
+		nr = p + a[p] - 1;
+		if (q <= nr && nr <= r) ret += (LL)solve(nl + 1, nr) * comb(nl - l, r - nr) % MOD;
+	}
+	if (a[p] <= a[q])
+	{
+		nr = q;
+		nl = q - a[q] + 1;
+		if (p >= nl && nl >= l) ret += (LL)solve(nl, nr - 1) * comb(nl - l, r - nr) % MOD;
+	}
+	
+	return ret % MOD;
+}
+
+int main()
+{
+	scanf("%d", &n);
+	for (int i = 1; i <= n; ++i)
+	{
+		scanf("%d", &a[i]);
+		sum[i] = sum[i - 1] + (a[i] > 0);
+	}
+	inv[1] = 1;
+	for (int i = 2; i <= n; ++i) inv[i] = (LL)(-inv[MOD % i]) * (MOD / i) % MOD;
+	f[0] = 1;
+	fv[0] = 1;
+	for (int i = 1; i <= n; ++i)
+	{
+		f[i] = (LL)f[i - 1] * i % MOD;
+		fv[i] = (LL)fv[i - 1] * inv[i] % MOD;
+	}
+	
+	
+	printf("%d\n", (solve(1, n) + MOD) % MOD);
+	
+	return 0;
+}
+
+E.Sereja and Dividing(Div 1) by sevenkplus
+
+#include <cstdio>
+#include <iostream>
+#include <iomanip>
+#include <algorithm>
+
+using namespace std;
+
+typedef pair<int, int> pii;
+typedef long double ld;
+
+const int MAXN = 300100;
+int ar[MAXN];
+int A[MAXN];
+int B[MAXN];
+pii arr[MAXN];
+
+int N;
+
+int main() {
+  scanf("%d", &N);
+  for(int i = 1; i <= N; ++i) {
+    scanf("%d", ar + i);
+    arr[i - 1] = pii(ar[i], i);
+  }
+
+  for(int i = 1; i <= N; ++i) {
+    A[i] = i - 1;
+    B[i] = i + 1;
+  }
+
+
+  ld ans = 0;
+  sort(arr, arr + N);
+  for(int i = 0; i < N; ++i) {
+    int x = arr[i].second;
+    int a = A[x], b = B[x];
+    B[a] = b;
+    A[b] = a;
+
+    ld lft = 0, rgt = 0;
+    int cur = x;
+    ld scal = 1;
+    for(int j = 0; j < 40; ++j) {
+      if (cur) {
+        lft += (cur - A[cur]) * scal;
+        cur = A[cur];
+        scal /= 2;
+      } else break;
+    }
+
+    cur = x;
+    scal = 1;
+    for(int j = 0; j < 40; ++j) {
+      if (cur <= N) {
+        rgt += (B[cur] - cur) * scal;
+        cur = B[cur];
+        scal /= 2;
+      } else break;
+    }
+
+//    printf("At %d, lft = %lf, rgt = %lf\n", i, double(lft), double(rgt));
+    ans += lft * rgt * ar[x] / 2;
+  }
+
+  cout << setprecision(10) << (ans / N / N) << "\n";
+  return 0;
+}
