@@ -1,0 +1,108 @@
+4.A - Watermelon
+
+#include<cstdio>
+int main()
+{
+    int w;
+    scanf("%d",&w);
+    printf((w%2==1||w==2)?"NO\n":"YES\n");
+	
+	return 0;
+}
+
+4.B - Before an Exam
+
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<cmath>
+#include<cstring>
+#include<algorithm>
+
+using namespace std;
+
+int maxt[250],mint[250],num[250];
+int main(){
+    int d,sum,i,j,m,n;
+    while(~scanf("%d %d",&d,&sum)){
+  m=n=0;
+  memset(num,0,sizeof(num));
+  for(i=0;i<d;i++){
+   scanf("%d %d",&mint[i],&maxt[i]);
+   m += mint[i];n += maxt[i];
+   num[i]=mint[i];
+  }
+  if(sum<m||sum>n)puts("NO");
+  else{
+   puts("YES");
+   sum -= m;
+   for(i=0;i<d;i++){
+    if(sum>0&&num[i]<maxt[i]){
+     j=min(maxt[i]-num[i],sum);
+     num[i]+=j;
+     sum-=j;
+    }
+    if(i>0)printf(" %d",num[i]);
+    else printf("%d",num[i]);
+   }
+   puts("");
+  }
+ }
+    return 0;
+}
+
+
+4.C - Registration system
+
+#include<iostream>
+#include<string>
+#include<algorithm>
+#include<cmath>
+#include<map>
+using namespace std;
+int main()
+{
+	int n;
+	cin>>n;
+	string s;
+	map<string,int> a;
+	while(n)
+	{
+		cin>>s;
+		if(a[s])cout<<s<<a[s]<<endl;
+		else cout<<"OK"<<endl;
+		a[s]++;
+		n--;
+	}
+}
+
+4.D - Mysterious Present
+
+#include<cstdio>
+int n,w[5001],h[5001],to[5001],d[5001];
+int dp(int v)
+{
+	int i;
+	if(d[v])return d[v];
+	d[v]=1;
+	for(i=0;i<=n;i++)
+		if(w[i]>w[v]&&h[i]>h[v])
+			if(dp(i)+1>d[v])
+				to[v]=i,d[v]=d[i]+1;
+   return d[v];
+}
+int main()
+{
+	int i;
+	scanf("%d",&n);
+	for(i=0;i<=n;i++)
+	{
+		to[i]=-1;
+		scanf("%d%d",w+i,h+i);
+	}
+	dp(0);
+	printf("%d\n",--d[0]);
+	for(i=to[0];i!=-1;i=to[i])
+		printf("%d ",i);
+}
+
