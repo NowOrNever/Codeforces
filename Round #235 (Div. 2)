@@ -1,0 +1,42 @@
+#include <algorithm>
+#include <iostream>
+#include <iomanip>
+#include <complex>
+#include <cstring>
+#include <cstdlib>
+#include <string>
+#include <vector>
+#include <cstdio>
+#include <cmath>
+#include <map>
+#include <set>
+using namespace std;
+//#pragma comment(linker,"/STACK:102400000,102400000")
+
+int MAIN()
+{
+	int n, Limit;
+	int sum = 0, t;
+	cin >> n >> Limit;
+	for(int i = 1; i <= n; i++)
+	{
+		int t;
+		cin >> t;
+		sum += t;
+	}
+	sum = abs(sum);
+	int ans = sum / Limit + (sum % Limit > 0);
+	cout << ans << endl;
+	return 0;
+}
+
+int main()
+{
+	#ifdef LOCAL_TEST
+		freopen("in.txt", "r", stdin);
+		freopen("out.txt", "w", stdout);
+	#endif
+	ios :: sync_with_stdio(false);
+	cout << fixed << setprecision(16);
+	return MAIN();
+}
