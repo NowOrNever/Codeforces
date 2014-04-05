@@ -1,0 +1,51 @@
+
+A. Even Odds
+
+#include<iostream>
+#include<algorithm>
+
+using namespace std;
+typedef long long LL;
+int main()
+{
+	LL n,k;
+	cin>>n>>k;
+	(2*k)-1<=n?cout<<(2*k)-1<<endl:cout<<2*(k-(n+1)/2);
+	return 0;
+}
+
+
+B. Strings of Power
+
+#include <iostream>
+#include <cstring>
+#include <cstdio>
+#include <algorithm>
+using namespace std;
+const int MAXN = 1000100 ;
+typedef long long LL;
+char s[ MAXN ] ;
+char m [ 2 ][6] = {"heavy" , "metal"} ;
+int main ()
+{
+    int  n , i , j ;
+    LL f , sum ;
+    while ( ~scanf("%s" ,s) )
+    {
+        for ( i = 0 ,f = 0,sum = 0; s [ i ] != '\0' ; i++ )
+        {
+            if (!strncmp(m[0] , s+i ,5))
+            {
+                f++;
+            }
+            else if (!strncmp(m[1] , s+i ,5))
+            {
+                sum += f;
+            }
+        }
+        printf("%I64d\n",sum);
+
+    }
+    return 0 ;
+}
+
